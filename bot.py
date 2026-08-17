@@ -46,7 +46,18 @@ async def check_callback(callback: types.CallbackQuery):
     else:
         await callback.answer("Siz hali kanalga a'zo bo'lmadingiz!", show_alert=True)
 
+async def handle(request):
+    return web.Response(text="Bot ishlayapti!")
+
 async def main():
+    port = int(os.environ.get("PORT", 8080))
+    app = web.Application()
+    app.router.add_get("/", handle)
+    runner = web.AppRunner(app)
+    await runner.setup()
+    site = web.TCPSite(runner, "0.0.0.0", port)
+    await site.start()
+
     print("Bot muvaffaqiyatli ishga tushdi!")
     await dp.start_polling(bot)
 
